@@ -76,7 +76,7 @@ def get_stuff(*args, **kwargs):
 
 demo = gr.Interface(
     fn=get_stuff,
-    inputs=["text", "slider"],
+    inputs=["text"],
     outputs=["image"],
 )
 
