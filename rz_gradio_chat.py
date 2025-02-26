@@ -80,4 +80,4 @@ demo = gr.Interface(
     outputs=["image"],
 )
 
-demo.launch()
+demo.launch(server_port=7860, server_name='0.0.0.0')
