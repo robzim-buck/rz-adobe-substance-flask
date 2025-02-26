@@ -227,7 +227,13 @@ def create():
         while 'succeeded' != status_dict['status']:
             print("Swait 1 sec")
             time.sleep(1)
-            status_dict = check_status(url=url)
+            print("Checking status in create")
+            try:
+              status_dict = check_status(url=url)
+            except Exception as e:
+              print(f'exception {e} getting ')
+              return "Failed.  Try Again."
+            # status_dict = check_status(url=url)
             if 'failed' in status_dict['status']:
                 raise Exception(f"Job failed: {status_dict}")
         print("Done!")
@@ -255,6 +261,7 @@ def render():
         while 'succeeded' != status_dict['status']:
             print("Swait 1 sec")
             time.sleep(1)
+            print("Checking status in render")
             try:
               status_dict = check_status(url=url)
             except Exception as e:
