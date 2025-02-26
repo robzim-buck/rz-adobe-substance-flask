@@ -42,7 +42,7 @@ def create(user_prompt:str=None):
             print("Checking status in create")
             try:
               status_dict = check_status(url=url)
-              gr.Info(status_dict['status'], duration=3, title="Render/Composite Info")
+              gr.Info(status_dict['status'], duration=3)
             except Exception as e:
               print(f'exception {e} getting ')
               return "Failed.  Try Again."
