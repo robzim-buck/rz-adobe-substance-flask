@@ -17,15 +17,15 @@ from uuid import uuid4
 import requests
 import time
 
+TIME_TO_SLEEP = 5
 
-ADOBE_SUBSTANCE_API_KEY = os.getenv('ADOBE_SUBSTANCE_API_KEY')
+# ADOBE_SUBSTANCE_API_KEY = os.getenv('ADOBE_SUBSTANCE_API_KEY')
 
-ADOBE_CLIENT_ID = os.getenv('ADOBE_CLIENT_ID')
+# ADOBE_CLIENT_ID = os.getenv('ADOBE_CLIENT_ID')
 
 
 ADOBE_SUBSTANCE_CLIENT_ID = os.getenv('ADOBE_SUBSTANCE_CLIENT_ID')
 ADOBE_SUBSTANCE_CLIENT_SECRET = os.getenv('ADOBE_SUBSTANCE_CLIENT_SECRET')
-
 
 
 def authenticate():
@@ -53,17 +53,28 @@ def authenticate():
 
 ADOBE_SUBSTANCE_URL = 'https://s3d.adobe.io'
 
-ADOBE_SUBSTANCE_API_KEY = authenticate()
+# ADOBE_SUBSTANCE_BEARER_TOKEN = authenticate()
+ADOBE_SUBSTANCE_ACCESS_TOKEN = os.getenv('ADOBE_SUBSTANCE_ACCESS_TOKEN')
 
 ADOBE_SUBSTANCE_HEADERS={
-  'X-API-Key': ADOBE_CLIENT_ID,
+  'X-API-Key': ADOBE_SUBSTANCE_CLIENT_ID,
   'Accept': 'application/json',
-  'Authorization': f'Bearer {ADOBE_SUBSTANCE_API_KEY}',
+  'Authorization': f'Bearer {ADOBE_SUBSTANCE_ACCESS_TOKEN}',
   'Content-Type': 'application/json'
 }
 
 
 def download_item(url:str=None):
+  
+    # tk = authenticate()
+    # _headers={
+    #   'X-API-Key': ADOBE_CLIENT_ID,
+    #   'Accept': 'application/json',
+    #   'Authorization': f'Bearer {tk}',
+    #   'Content-Type': 'application/json'
+    # }
+
+  
     res = requests.get(url=url,
                   headers=ADOBE_SUBSTANCE_HEADERS)
     content = res.content
@@ -88,16 +99,16 @@ def create_model(prompt:object=None):
 
 
 def render_model(model:str=None):
-    two_cyl = 'https://github.com/KhronosGroup/glTF-Sample-Models/blob/main/2.0/2CylinderEngine/glTF-Binary/2CylinderEngine.glb'
+    # two_cyl = 'https://github.com/KhronosGroup/glTF-Sample-Models/blob/main/2.0/2CylinderEngine/glTF-Binary/2CylinderEngine.glb'
     # water_bottle = '"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/WaterBottle/glTF-Binary/WaterBottle.glb"'
     sample_model = {
   "scene": {
-    "modelFile": "2CylinderEngine.glb"
+    "modelFile": "WaterBottle.glb"
   },
   "sources": [
     {
       "url": {
-        "url": two_cyl
+        "url": testurl
       }
     }
   ]
@@ -124,35 +135,6 @@ def check_status(url:str=None):
 
 
 
-def main():
-  im = test_image()
-  pp(im)
-  return
-  # tk = authenticate()
-  # pp(tk)
-
-
-  # res = create_model()
-  # pp(res)
-
-
-
-
-  prompt = {
-  "cameraName": "main_camera",
-  "heroAsset": "bottle",
-  "prompt": "cat sitting on a bench in front of the sixtine chapel.  focal length 50mm",
-  "sources": [
-    {
-      "url": {
-        "url": "https://cdn.substance3d.com/v2/files/public/compositing_table_bottle.glb"
-      }
-    }
-    ]
-    }
-  mymodel = create_model(prompt=prompt)
-  pp(mymodel)
-
 
 
 def make_api_call(url, data, *args, **kwargs):
@@ -162,7 +144,7 @@ def make_api_call(url, data, *args, **kwargs):
     url=url,
     headers={
     "X-API-Key": ADOBE_SUBSTANCE_CLIENT_ID,
-    "Authorization": f"Bearer {ADOBE_SUBSTANCE_API_KEY}",
+    "Authorization": f"Bearer {ADOBE_SUBSTANCE_ACCESS_TOKEN}",
     "Content-Type": "application/json"
     },
     json=data,
@@ -186,7 +168,7 @@ def poll_job_status(response):
     url=response.get("url"),
     headers={
     "Content-Type": "application/json",
-    "Authorization" : f"Bearer {ADOBE_SUBSTANCE_API_KEY}",
+    "Authorization" : f"Bearer {ADOBE_SUBSTANCE_ACCESS_TOKEN}",
     "Accept": "application/json",
     }
     )
@@ -269,9 +251,7 @@ def render_3d_model(data):
     # get the image data
     render_image_data = requests.get(
     url=status_res.get("result").get("renderUrl"),
-    headers={
-    "Authorization" : f"Bearer {ADOBE_SUBSTANCE_API_KEY}",
-    }
+    headers=ADOBE_SUBSTANCE_HEADERS
     ).content
     return status_res
   except Exception as _e:
@@ -281,7 +261,7 @@ def render_3d_model(data):
 
 testurl = 'https://cdn.substance3d.com/v2/files/public/compositing_table_bottle.glb'
 oldurl = 'https://cdn.substance3d.com/v2/files/public/stepladder.usdz'
-
+test2url = 'https://substance3d.adobe.com/community-assets/assets/2fbf86ba03aabd618aa9ed99d535dd4eb98de3f2'
 
 def test_image():
   model_with_background_color = render_3d_model(
@@ -295,7 +275,7 @@ def test_image():
         {
           "mountPoint": "/",
           "url": {
-          "url": testurl
+          "url": oldurl
         }
         }
       ],
@@ -305,13 +285,9 @@ def test_image():
   return model_with_background_color
 
 
-if __name__ == '__main__':
-  # main()
-
-
-
-
-  res = render_model()
+def render_and_save(filename:str=None):
+  # res = render_model()
+  res = test_image()
   pp(res)
   url = res['url']
   status_dict = check_status(url=url)
@@ -320,23 +296,69 @@ if __name__ == '__main__':
       raise Exception(f"Job failed: {status_dict}")
 
     while 'succeeded' != status_dict['status']:
-        print("Swait 1 sec")
-        time.sleep(1)
+        print(f"Swait {TIME_TO_SLEEP} sec")
+        time.sleep(TIME_TO_SLEEP)
         status_dict = check_status(url=url)
     print("Done!")
     print(f"Created {status_dict['result']['outputSpace']['files'][-1]['name']}")
     file_url = status_dict['result']['outputSpace']['files'][-1]['url']
-    # pp(status_dict)
-    # url = status_dict['result']['outputs'][-1]['image']['url']
-    # url = status_dict['result']['outputSpace'][-1]['image']['url']
-
-
     item = download_item(url=file_url)
     img = pil_image.open(io.BytesIO(item))
-
-
-
-    # img = test_image()
-    img.save("rztest5.png", "PNG")
+    img.save(filename, "PNG")
   except Exception as _e:
     print(f'exception {_e} getting results')
+
+
+def generate_bg_comp_and_save(filename:str=None):
+  prompt = {
+  "sources": [
+    {
+      "url": {
+        "url": "https://cdn.substance3d.com/v2/files/public/compositing_table_bottle.glb"
+      }
+    }
+  ],
+  "heroAsset": "bottle",
+  "cameraName": "main_camera",
+  "prompt": "french style kitchen with empty wooden table window on the left focal length 50mm"
+}
+  res = create_model(prompt=prompt)
+  url = res['url']
+  status_dict = check_status(url=url)
+  try:
+    if 'failed' == status_dict['status']:
+      raise Exception(f"Job failed: {status_dict}")
+
+    while 'succeeded' != status_dict['status']:
+        print(f"Swait {TIME_TO_SLEEP} sec")
+        time.sleep(TIME_TO_SLEEP)
+        status_dict = check_status(url=url)
+    print("Done!")
+    print(f"Created {status_dict['result']['outputSpace']['files'][-1]['name']}")
+    file_url = status_dict['result']['outputSpace']['files'][-1]['url']
+    item = download_item(url=file_url)
+    img = pil_image.open(io.BytesIO(item))
+    img.save(filename, "PNG")
+  except Exception as _e:
+    print(f'exception {_e} getting results')
+
+
+
+
+
+
+def main():
+  # test_image()
+  res = authenticate()
+  pp(res)
+  # return
+  # generate_bg_comp_and_save(filename='zoop.png')
+  # render_and_save(filename="zoop.png")
+
+
+
+if __name__ == '__main__':
+  main()
+
+
+
