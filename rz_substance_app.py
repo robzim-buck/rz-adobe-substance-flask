@@ -254,10 +254,15 @@ def render():
 
         while 'succeeded' != status_dict['status']:
             print("Swait 1 sec")
-            time.sleep(5)
-            status_dict = check_status(url=url)
+            time.sleep(1)
+            try:
+              status_dict = check_status(url=url)
+            except Exception as e:
+              print(f'exception {e} getting ')
+              return "Failed.  Try Again."
             if 'failed' in status_dict['status']:
-                raise Exception(f"Job failed: {status_dict}")
+              # raise Exception(f"Job failed: {status_dict}")
+              return "Failed.  Try Again."
         print("Done!")
         print(f"Created {status_dict['result']['outputSpace']['files'][-1]['name']}")
         file_url = status_dict['result']['outputSpace']['files'][-1]['url']
