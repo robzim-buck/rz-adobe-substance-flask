@@ -37,11 +37,12 @@ def create(user_prompt:str=None):
             raise Exception(f"Job failed: {status_dict}")
 
         while 'succeeded' != status_dict['status']:
-            print("Swait 1 sec")
-            time.sleep(1)
+            print("Swait 5 sec")
+            time.sleep(5)
             print("Checking status in create")
             try:
               status_dict = check_status(url=url)
+              gr.Info(status_dict['status'], duration=3, title="Render/Composite Info")
             except Exception as e:
               print(f'exception {e} getting ')
               return "Failed.  Try Again."
@@ -61,6 +62,7 @@ def create(user_prompt:str=None):
 
 
 def get_stuff(*args, **kwargs):
+    gr.Info("Running Prompt Create")
     print(args)
     print(kwargs)
     theprompt = args[0]
@@ -75,7 +77,10 @@ def get_stuff(*args, **kwargs):
 
 
 demo = gr.Interface(
+    title="Buck Glowworm Sample",
+    description="Enter a prompt for a composite run with the sample model.",
     fn=get_stuff,
+    show_progress='full',
     inputs=["text"],
     outputs=["image"],
 )
