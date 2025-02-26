@@ -1,5 +1,6 @@
 import time
 import io
+import shutil
 import gradio as gr
 from rz_adobe_substance_func import render_model, make_api_call, poll_job_status, create_model, render_3d_model, check_status, download_item
 from PIL import Image as pil_image
@@ -69,6 +70,8 @@ def get_stuff(*args, **kwargs):
     print(theprompt)
     create(user_prompt=theprompt)
     myimg = gr.Image('zoop.png')
+    copy_result = shutil.copy('zoop.png', f'{theprompt.replace(" ", "_")}.png')
+    print(copy_result)
     return myimg
 
 
