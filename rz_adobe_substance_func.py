@@ -54,12 +54,12 @@ def authenticate():
 ADOBE_SUBSTANCE_URL = 'https://s3d.adobe.io'
 
 # ADOBE_SUBSTANCE_BEARER_TOKEN = authenticate()
-ADOBE_SUBSTANCE_ACCESS_TOKEN = os.getenv('ADOBE_SUBSTANCE_ACCESS_TOKEN')
+ADOBE_SUBSTANCE_BEARER_TOKEN = os.getenv('ADOBE_SUBSTANCE_ACCESS_TOKEN')
 
 ADOBE_SUBSTANCE_HEADERS={
   'X-API-Key': ADOBE_SUBSTANCE_CLIENT_ID,
   'Accept': 'application/json',
-  'Authorization': f'Bearer {ADOBE_SUBSTANCE_ACCESS_TOKEN}',
+  'Authorization': f'Bearer {ADOBE_SUBSTANCE_BEARER_TOKEN}',
   'Content-Type': 'application/json'
 }
 
@@ -144,7 +144,7 @@ def make_api_call(url, data, *args, **kwargs):
     url=url,
     headers={
     "X-API-Key": ADOBE_SUBSTANCE_CLIENT_ID,
-    "Authorization": f"Bearer {ADOBE_SUBSTANCE_ACCESS_TOKEN}",
+    "Authorization": f"Bearer {ADOBE_SUBSTANCE_BEARER_TOKEN}",
     "Content-Type": "application/json"
     },
     json=data,
@@ -168,7 +168,7 @@ def poll_job_status(response):
     url=response.get("url"),
     headers={
     "Content-Type": "application/json",
-    "Authorization" : f"Bearer {ADOBE_SUBSTANCE_ACCESS_TOKEN}",
+    "Authorization" : f"Bearer {ADOBE_SUBSTANCE_BEARER_TOKEN}",
     "Accept": "application/json",
     }
     )
@@ -349,10 +349,10 @@ def generate_bg_comp_and_save(filename:str=None):
 
 def main():
   # test_image()
-  res = authenticate()
-  pp(res)
+  # res = authenticate()
+  # pp(res)
   # return
-  # generate_bg_comp_and_save(filename='zoop.png')
+  generate_bg_comp_and_save(filename='zoop.png')
   # render_and_save(filename="zoop.png")
 
 

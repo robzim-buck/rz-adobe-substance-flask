@@ -69,8 +69,9 @@ def get_stuff(*args, **kwargs):
     theprompt = args[0]
     print(theprompt)
     create(user_prompt=theprompt)
-    myimg = gr.Image('zoop.png')
-    copy_result = shutil.copy('zoop.png', f'{theprompt.replace(" ", "_")}.png')
+    image_name = f'{theprompt.replace(" ", "_")}.png'
+    myimg = gr.Image("zoop.png")
+    copy_result = shutil.copy('zoop.png', image_name)
     print(copy_result)
     return myimg
 
