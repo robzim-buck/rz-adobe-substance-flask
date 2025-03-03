@@ -105,7 +105,7 @@ def load_mesh(mesh_file_name):
 demo = gr.Interface(fn=get_stuff,
     inputs=[gr.Model3D(),
             gr.Text(label="Enter a Prompt"),
-            gr.Slider(value=15, minimum=0, maximum=100, step=1, show_reset_button=True, label="Camera Focal Length"),
+            gr.Slider(value=15, minimum=0, maximum=100, step=1, label="Camera Focal Length"),
             gr.Checkbox(value=True, label="Secret1 Checkbox"),
             gr.Checkbox(value=True, label="Secret2 Checkbox"),
             gr.Checkbox(value=True, label="Secret3 Checkbox"),
