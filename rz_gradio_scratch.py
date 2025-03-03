@@ -55,10 +55,10 @@ def create(user_prompt:str=None):
         file_url = status_dict['result']['outputSpace']['files'][-1]['url']
         item = download_item(url=file_url)
         img = pil_image.open(io.BytesIO(item))
-        # image_name = f'{prompt.replace(" ", "_")}.png'
-        image_name = 'zoop.png'
-        img.save(image_name, "PNG")
-        return image_name
+        image_name_from_prompt = f'{prompt['prompt'].replace(" ", "_")}.png'
+        # image_name = 'zoop.png'
+        img.save(image_name_from_prompt, "PNG")
+        return image_name_from_prompt
         # return 'success.  Please Refesh the Screen!'
     except Exception as _e:
         print(f'exception {_e} getting results')
@@ -76,10 +76,11 @@ def get_stuff(*args, **kwargs):
     print(focal_length)
     print(theprompt)
     myimg_name = create(user_prompt=theprompt)
-    myimg = gr.Image('zoop.png')
-    copy_result = shutil.copy('zoop.png', myimg_name)
-    print(copy_result)
-    return myimg
+    my_image =gr.Image(value=myimg_name)
+    # copy_result = shutil.copy('zoop.png', myimg_name)
+    # print(copy_result)
+    return my_image
+
 
 cam_defs = {
       "focal": 10,
@@ -100,8 +101,7 @@ import os
 def load_mesh(mesh_file_name):
     return mesh_file_name
 
-demo = gr.Interface(
-    fn=get_stuff,
+demo = gr.Interface(fn=get_stuff,
     inputs=[gr.Model3D(),
             gr.Text(label="Enter a Prompt"),
             gr.Slider(value=15, minimum=0, maximum=100, step=1, show_reset_button=True, label="Camera Focal Length"),
