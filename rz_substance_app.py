@@ -163,16 +163,28 @@ def test_image():
       "backgroundColor": [.384,.871,0,1], # it is not clear in the doc that the values have to be less than or equal to 1 for RGBA. https://rgbcolorpicker.com/0-1
       "showEnvironment": False,
       },
-      "scene": {},
-      "sources": [
-        {
-          "mountPoint": "/",
-          "url": {
-          "url": testurl
-        }
-        }
-      ],
-      }
+      "scene": {
+            # "camera": {
+            #   "focal": 10,
+            #   "transform": {
+            #     "azimuthAltitude": {
+            #       "azimuth": 90, "altitude": 90,
+            #       "lookAt": [0, 0, 0],
+            #       "radius": 1
+            #     }
+            #   }
+            # }
+          },
+        "sources": [
+          {
+            "mountPoint": "/",
+            "url": {
+            "url": testurl
+          }
+          }
+        ],
+      },
+    
     )
   # myimg = pil_image.Image(data=model_with_background_color, width=600)
   return model_with_background_color
@@ -292,4 +304,5 @@ def render():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    render()
+    # app.run(host="0.0.0.0", port=5000)
