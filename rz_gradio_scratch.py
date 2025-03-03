@@ -55,7 +55,7 @@ def create(user_prompt:str=None):
         file_url = status_dict['result']['outputSpace']['files'][-1]['url']
         item = download_item(url=file_url)
         img = pil_image.open(io.BytesIO(item))
-        image_name_from_prompt = f'{prompt['prompt'].replace(" ", "_")}.png'
+        image_name_from_prompt = f"{prompt['prompt'].replace(" ", "_")}.png"
         # image_name = 'zoop.png'
         img.save(image_name_from_prompt, "PNG")
         return image_name_from_prompt
