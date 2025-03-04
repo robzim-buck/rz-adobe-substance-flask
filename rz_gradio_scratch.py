@@ -14,7 +14,7 @@ def create(user_prompt:str=None):
         # "scene": cam_defs,
     "cameraName": "main_camera",
     "heroAsset": "bottle",
-    "prompt": f'"{user_prompt}"',
+    "prompt": user_prompt,
     "sources": [
     {
         "url": {
