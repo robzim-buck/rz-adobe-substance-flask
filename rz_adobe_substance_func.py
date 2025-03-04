@@ -2,19 +2,12 @@
 import dotenv
 import os
 import io
-import json
 import requests
 from pprint import pprint as pp
 dotenv.load_dotenv('.env')
 from PIL import Image as pil_image
-import base64
-import os
 import traceback
-from pathlib import Path
-from pprint import pprint as pp
 from time import sleep
-from uuid import uuid4
-import requests
 import time
 
 TIME_TO_SLEEP = 5
@@ -44,7 +37,8 @@ def authenticate():
     },
     )
     res.raise_for_status()
-    return res.json().get("access_token")
+    js = res.json()
+    return js.get("access_token")
   except Exception as _e:
     print(f"exception {_e} authenticating")
     print(res.text)
@@ -53,8 +47,8 @@ def authenticate():
 
 ADOBE_SUBSTANCE_URL = 'https://s3d.adobe.io'
 
-# ADOBE_SUBSTANCE_BEARER_TOKEN = authenticate()
-ADOBE_SUBSTANCE_BEARER_TOKEN = os.getenv('ADOBE_SUBSTANCE_ACCESS_TOKEN')
+ADOBE_SUBSTANCE_BEARER_TOKEN = authenticate() 
+# ADOBE_SUBSTANCE_BEARER_TOKEN = os.getenv('ADOBE_SUBSTANCE_ACCESS_TOKEN')
 
 
 ADOBE_SUBSTANCE_HEADERS={

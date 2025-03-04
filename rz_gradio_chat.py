@@ -2,7 +2,7 @@ import time
 import io
 import shutil
 import gradio as gr
-from rz_adobe_substance_func import render_model, make_api_call, poll_job_status, create_model, render_3d_model, check_status, download_item
+from rz_adobe_substance_func import create_model, check_status, download_item
 from PIL import Image as pil_image
 from pprint import pprint as pp
 

@@ -1,12 +1,10 @@
 import time
 import io
-import shutil
 import gradio as gr
 from rz_adobe_substance_func import create_model, check_status, download_item
 from PIL import Image as pil_image
 from pprint import pprint as pp
-
-
+import os
 
 def greet(name, intensity):
     return "Hello, " + name + "!" * int(intensity)
@@ -96,19 +94,17 @@ cam_defs = {
 
 
 
-import gradio as gr
-import os
 
 def load_mesh(mesh_file_name):
     return mesh_file_name
 
 demo = gr.Interface(fn=get_stuff,
     inputs=[gr.Model3D(),
-            gr.Text(label="Enter a Prompt"),
-            gr.Slider(value=15, minimum=0, maximum=100, step=1, label="Camera Focal Length"),
             gr.Checkbox(value=True, label="Secret1 Checkbox"),
             gr.Checkbox(value=True, label="Secret2 Checkbox"),
             gr.Checkbox(value=True, label="Secret3 Checkbox"),
+            gr.Text(label="Enter a Prompt"),
+            gr.Slider(value=15, minimum=0, maximum=100, step=1, label="Camera Focal Length"),
             gr.JSON(value=cam_defs, label= "Camera Definition"),
             gr.FileExplorer(glob="*.txt", label="Select A File To Upload")
             ],
