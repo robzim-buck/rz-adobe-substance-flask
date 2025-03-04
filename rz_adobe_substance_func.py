@@ -344,10 +344,10 @@ def generate_bg_comp_and_save(filename:str=None):
 
 def main():
   # test_image()
-  # res = authenticate()
-  # pp(res)
-  # return
-  generate_bg_comp_and_save(filename='zoop.png')
+  res = authenticate()
+  pp(res)
+  return
+  # generate_bg_comp_and_save(filename='zoop.png')
   # render_and_save(filename="zoop.png")
 
 

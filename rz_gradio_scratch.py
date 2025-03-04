@@ -1,14 +1,10 @@
 import time
+import os
 import io
 import gradio as gr
 from rz_adobe_substance_func import create_model, check_status, download_item
 from PIL import Image as pil_image
 from pprint import pprint as pp
-import os
-
-def greet(name, intensity):
-    return "Hello, " + name + "!" * int(intensity)
-
 
 
 
@@ -68,12 +64,12 @@ def get_stuff(*args, **kwargs):
     gr.Info("Running Prompt Create")
     print(args)
     print(kwargs)
-    theprompt = args[1]
-    focal_length = args[2]
-    camera_specs = args[6]
-    print(camera_specs)
-    print(focal_length)
-    print(theprompt)
+    theprompt = args[0]
+    # focal_length = args[2]
+    # camera_specs = args[6]
+    # print(camera_specs)
+    # print(focal_length)
+    # print(theprompt)
     myimg_name = create(user_prompt=theprompt)
     my_image =gr.Image(value=myimg_name)
     # copy_result = shutil.copy('zoop.png', myimg_name)
@@ -99,25 +95,26 @@ def load_mesh(mesh_file_name):
     return mesh_file_name
 
 demo = gr.Interface(fn=get_stuff,
-    inputs=[gr.Model3D(),
-            gr.Checkbox(value=True, label="Secret1 Checkbox"),
-            gr.Checkbox(value=True, label="Secret2 Checkbox"),
-            gr.Checkbox(value=True, label="Secret3 Checkbox"),
+    inputs=[
+            # gr.Model3D(),
+            # gr.Checkbox(value=True, label="Secret1 Checkbox"),
+            # gr.Checkbox(value=True, label="Secret2 Checkbox"),
+            # gr.Checkbox(value=True, label="Secret3 Checkbox"),
             gr.Text(label="Enter a Prompt"),
-            gr.Slider(value=15, minimum=0, maximum=100, step=1, label="Camera Focal Length"),
-            gr.JSON(value=cam_defs, label= "Camera Definition"),
-            gr.FileExplorer(glob="*.txt", label="Select A File To Upload")
+            # gr.Slider(value=15, minimum=0, maximum=100, step=1, label="Camera Focal Length"),
+            # gr.JSON(value=cam_defs, label= "Camera Definition"),
+            # gr.FileExplorer(glob="*.txt", label="Select A File To Upload")
             ],
     outputs = gr.Image(),
-    examples=[
-        [os.path.join(os.path.abspath(''), "files/Bunny.obj")],
-        [os.path.join(os.path.abspath(''), "files/Duck.glb")],
-        [os.path.join(os.path.abspath(''), "files/Fox.gltf")],
-        [os.path.join(os.path.abspath(''), "files/face.obj")],
-        [os.path.join(os.path.abspath(''), "files/sofia.stl")],
-        ["https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/bonsai/bonsai-7k-mini.splat"],
-        ["https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/luigi/luigi.ply"],
-    ]
+    # examples=[
+    #     [os.path.join(os.path.abspath(''), "files/Bunny.obj")],
+    #     [os.path.join(os.path.abspath(''), "files/Duck.glb")],
+    #     [os.path.join(os.path.abspath(''), "files/Fox.gltf")],
+    #     [os.path.join(os.path.abspath(''), "files/face.obj")],
+    #     [os.path.join(os.path.abspath(''), "files/sofia.stl")],
+    #     ["https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/bonsai/bonsai-7k-mini.splat"],
+    #     ["https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/luigi/luigi.ply"],
+    # ]
 )
 
 if __name__ == "__main__":
