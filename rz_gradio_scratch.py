@@ -94,7 +94,10 @@ cam_defs = {
 def load_mesh(mesh_file_name):
     return mesh_file_name
 
-demo = gr.Interface(fn=get_stuff,
+demo = gr.Interface(
+    title="Buck Glowworm Sample",
+    description="This is a sample of the Buck Glowworm project.  It will take a prompt and create an image.",
+    fn=get_stuff,
     inputs=[
             # gr.Model3D(),
             # gr.Checkbox(value=True, label="Secret1 Checkbox"),
