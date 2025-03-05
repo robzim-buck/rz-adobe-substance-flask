@@ -47,8 +47,8 @@ def authenticate():
 
 ADOBE_SUBSTANCE_URL = 'https://s3d.adobe.io'
 
-# ADOBE_SUBSTANCE_BEARER_TOKEN = authenticate() 
-ADOBE_SUBSTANCE_BEARER_TOKEN = os.getenv('ADOBE_SUBSTANCE_ACCESS_TOKEN')
+ADOBE_SUBSTANCE_BEARER_TOKEN = authenticate() 
+# ADOBE_SUBSTANCE_BEARER_TOKEN = os.getenv('ADOBE_SUBSTANCE_ACCESS_TOKEN')
 
 
 ADOBE_SUBSTANCE_HEADERS={
@@ -344,11 +344,11 @@ def generate_bg_comp_and_save(filename:str=None):
 
 def main():
   # test_image()
-  res = authenticate()
-  pp(res)
-  return
+  # res = authenticate()
+  # pp(res)
+  # return
   # generate_bg_comp_and_save(filename='zoop.png')
-  # render_and_save(filename="zoop.png")
+  render_and_save(filename="zoop.png")
 
 
 
