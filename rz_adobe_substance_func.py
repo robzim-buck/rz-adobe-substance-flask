@@ -33,7 +33,7 @@ def authenticate():
       "grant_type": "client_credentials",
       "client_id": ADOBE_SUBSTANCE_CLIENT_ID,
       "client_secret": ADOBE_SUBSTANCE_CLIENT_SECRET,
-      "scope": "openid, AdobeID, read_organizations, email, substance3d_api.jobs.create, firefly_api, profile, substance3d_api.spaces.create"
+      "scope": "openid, AdobeID, read_organizations, firefly_api, firefly_enterprise, substance3d_api.spaces.create, profile, email, substance3d_api.jobs.create"
     },
     )
     res.raise_for_status()
@@ -47,8 +47,8 @@ def authenticate():
 
 ADOBE_SUBSTANCE_URL = 'https://s3d.adobe.io'
 
-# ADOBE_SUBSTANCE_BEARER_TOKEN = authenticate() 
-ADOBE_SUBSTANCE_BEARER_TOKEN = os.getenv('ADOBE_SUBSTANCE_ACCESS_TOKEN')
+ADOBE_SUBSTANCE_BEARER_TOKEN = authenticate() 
+# ADOBE_SUBSTANCE_BEARER_TOKEN = os.getenv('ADOBE_SUBSTANCE_ACCESS_TOKEN')
 
 
 ADOBE_SUBSTANCE_HEADERS={
@@ -347,8 +347,8 @@ def main():
   # res = authenticate()
   # pp(res)
   # return
-  # generate_bg_comp_and_save(filename='zoop.png')
-  render_and_save(filename="zoop.png")
+  generate_bg_comp_and_save(filename='zap.png')
+  # render_and_save(filename="zoop.png")
 
 
 
