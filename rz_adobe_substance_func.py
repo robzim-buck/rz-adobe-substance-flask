@@ -20,7 +20,9 @@ TIME_TO_SLEEP = 5
 ADOBE_SUBSTANCE_CLIENT_ID = os.getenv('ADOBE_SUBSTANCE_CLIENT_ID')
 ADOBE_SUBSTANCE_CLIENT_SECRET = os.getenv('ADOBE_SUBSTANCE_CLIENT_SECRET')
 
-
+#openid, AdobeID, firefly_api, firefly_enterprise, substance3d_api.spaces.create, email, read_organizations, substance3d_api.jobs.create, profile
+#openid, AdobeID, read_organizations, email, substance3d_api.jobs.create, firefly_api, profile, substance3d_api.spaces.create
+#openid, AdobeID, read_organizations, firefly_api, firefly_enterprise, substance3d_api.spaces.create, profile, email, substance3d_api.jobs.create 
 def authenticate():
   res = None
   try:
@@ -33,7 +35,7 @@ def authenticate():
       "grant_type": "client_credentials",
       "client_id": ADOBE_SUBSTANCE_CLIENT_ID,
       "client_secret": ADOBE_SUBSTANCE_CLIENT_SECRET,
-      "scope": "openid, AdobeID, read_organizations, firefly_api, firefly_enterprise, substance3d_api.spaces.create, profile, email, substance3d_api.jobs.create"
+      "scope": "openid, AdobeID, read_organizations, email, substance3d_api.jobs.create, firefly_api, profile, substance3d_api.spaces.create"
     },
     )
     res.raise_for_status()
@@ -51,12 +53,16 @@ ADOBE_SUBSTANCE_BEARER_TOKEN = authenticate()
 # ADOBE_SUBSTANCE_BEARER_TOKEN = os.getenv('ADOBE_SUBSTANCE_ACCESS_TOKEN')
 
 
-ADOBE_SUBSTANCE_HEADERS={
+def adobe_substance_headers():
+  tk = authenticate()
+  hdr = {
   'X-API-Key': ADOBE_SUBSTANCE_CLIENT_ID,
   'Accept': 'application/json',
-  'Authorization': f'Bearer {ADOBE_SUBSTANCE_BEARER_TOKEN}',
+  'Authorization': f'Bearer {tk}',
   'Content-Type': 'application/json'
-}
+  } 
+  return hdr
+
 
 
 def download_item(url:str=None):
@@ -71,21 +77,21 @@ def download_item(url:str=None):
 
   
     res = requests.get(url=url,
-                  headers=ADOBE_SUBSTANCE_HEADERS)
+                  headers=adobe_substance_headers())
     content = res.content
     return content
 
 
 def upload_model(model:str=None):
     requests.post(url=ADOBE_SUBSTANCE_URL,
-                  headers=ADOBE_SUBSTANCE_HEADERS,
+                  headers=adobe_substance_headers(),
                   json=model)
 
 
 
 def create_model(prompt:object=None):
     res = requests.post(url='https://s3d.adobe.io/v1beta/3dscenes/compose',
-                  headers=ADOBE_SUBSTANCE_HEADERS,
+                  headers=adobe_substance_headers(),
                   json=prompt)
     js = res.json()
     pp(js)
@@ -113,7 +119,7 @@ def render_model(model:str=None):
       model=sample_model
 
     res = requests.post(url='https://s3d.adobe.io/v1beta/3dmodels/render',
-                  headers=ADOBE_SUBSTANCE_HEADERS,
+                  headers=adobe_substance_headers(),
                   json=model)
     js = res.json()
 
@@ -123,7 +129,7 @@ def render_model(model:str=None):
 
 def check_status(url:str=None):
   res = requests.get(url=url,
-                  headers=ADOBE_SUBSTANCE_HEADERS)
+                  headers=adobe_substance_headers())
   js = res.json()
   pp(js)
   return js
@@ -246,7 +252,7 @@ def render_3d_model(data):
     # get the image data
     render_image_data = requests.get(
     url=status_res.get("result").get("renderUrl"),
-    headers=ADOBE_SUBSTANCE_HEADERS
+    headers=adobe_substance_headers()
     ).content
     return status_res
   except Exception as _e:
