@@ -294,7 +294,7 @@ def render_and_save(filename:str=None):
     print(f'exception {_e} getting results')
 
 
-def generate_bg_comp_and_save(filename:str=None):
+def generate_bg_comp_and_save(prompt:str=None,  focal_length_in_mm:int=None, filename:str=None):
   prompt = {
   "sources": [
     {
@@ -305,7 +305,7 @@ def generate_bg_comp_and_save(filename:str=None):
   ],
   "heroAsset": "bottle",
   "cameraName": "main_camera",
-  "prompt": "french style kitchen with empty wooden table window on the left focal length 50mm"
+  "prompt": f"prompt.  focal length{focal_length_in_mm} mm"
 }
   res = create_model(prompt=prompt)
   url = res['url']
@@ -326,9 +326,6 @@ def generate_bg_comp_and_save(filename:str=None):
     img.save(filename, "PNG")
   except Exception as _e:
     print(f'exception {_e} getting results')
-
-
-
 
 
 

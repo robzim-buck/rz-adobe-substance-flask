@@ -8,20 +8,20 @@ from pprint import pprint as pp
 
 
 
-def create(user_prompt:str=None):
+def create(user_prompt:str=None,  focal_length_in_mm:int=None, seed:int=None):
     print(user_prompt)
     prompt = {
-        # "scene": cam_defs,
-    "cameraName": "main_camera",
-    "heroAsset": "bottle",
-    "prompt": user_prompt,
     "sources": [
-    {
+        {
         "url": {
-        "url": "https://cdn.substance3d.com/v2/files/public/compositing_table_bottle.glb"
+            "url": "https://cdn.substance3d.com/v2/files/public/compositing_table_bottle.glb"
         }
-    }
-    ]
+        }
+    ],
+    "heroAsset": "bottle",
+    "cameraName": "main_camera",
+    "prompt": f"{user_prompt}.  focal length {focal_length_in_mm} mm",
+    "seeds": [int(seed)]
     }
     pp(prompt)
     mymodel = create_model(prompt=prompt)
@@ -50,7 +50,11 @@ def create(user_prompt:str=None):
         item = download_item(url=file_url)
         img = pil_image.open(io.BytesIO(item))
         dashed_prompt = prompt['prompt'].replace(" ", "_")
-        image_name_from_prompt = f"{dashed_prompt}.png"
+        
+        dashed_prompt_with_seed = dashed_prompt + f"_seed_{seed}"
+
+        
+        image_name_from_prompt = f"{dashed_prompt_with_seed}.png"
         # image_name = 'zoop.png'
         img.save(image_name_from_prompt, "PNG")
         return image_name_from_prompt
@@ -60,17 +64,9 @@ def create(user_prompt:str=None):
 
 
 
-def get_stuff(*args, **kwargs):
+def get_stuff(theprompt:str=None, focal_length:int=None, seed:int=None):
     gr.Info("Running Prompt Create")
-    print(args)
-    print(kwargs)
-    theprompt = args[0]
-    # focal_length = args[2]
-    # camera_specs = args[6]
-    # print(camera_specs)
-    # print(focal_length)
-    # print(theprompt)
-    myimg_name = create(user_prompt=theprompt)
+    myimg_name = create(user_prompt=theprompt, focal_length_in_mm=focal_length, seed=seed)
     my_image =gr.Image(value=myimg_name)
     # copy_result = shutil.copy('zoop.png', myimg_name)
     # print(copy_result)
@@ -104,6 +100,8 @@ demo = gr.Interface(
             # gr.Checkbox(value=True, label="Secret2 Checkbox"),
             # gr.Checkbox(value=True, label="Secret3 Checkbox"),
             gr.Text(label="Enter a Prompt"),
+            gr.Text(label="Focal Length in mm"),
+            gr.Text(label="Seed Integer for Render Randomness")
             # gr.Slider(value=15, minimum=0, maximum=100, step=1, label="Camera Focal Length"),
             # gr.JSON(value=cam_defs, label= "Camera Definition"),
             # gr.FileExplorer(glob="*.txt", label="Select A File To Upload")
