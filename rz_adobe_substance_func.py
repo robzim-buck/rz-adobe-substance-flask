@@ -23,6 +23,7 @@ ADOBE_SUBSTANCE_CLIENT_SECRET = os.getenv('ADOBE_SUBSTANCE_CLIENT_SECRET')
 #openid, AdobeID, firefly_api, firefly_enterprise, substance3d_api.spaces.create, email, read_organizations, substance3d_api.jobs.create, profile
 #openid, AdobeID, read_organizations, email, substance3d_api.jobs.create, firefly_api, profile, substance3d_api.spaces.create
 #openid, AdobeID, read_organizations, firefly_api, firefly_enterprise, substance3d_api.spaces.create, profile, email, substance3d_api.jobs.create 
+
 def authenticate():
   res = None
   try:
@@ -35,7 +36,7 @@ def authenticate():
       "grant_type": "client_credentials",
       "client_id": ADOBE_SUBSTANCE_CLIENT_ID,
       "client_secret": ADOBE_SUBSTANCE_CLIENT_SECRET,
-      "scope": "openid, AdobeID, read_organizations, email, substance3d_api.jobs.create, firefly_api, profile, substance3d_api.spaces.create"
+      "scope": "openid, AdobeID, read_organizations, firefly_api, firefly_enterprise, substance3d_api.spaces.create, profile, email, substance3d_api.jobs.create"
     },
     )
     res.raise_for_status()
@@ -49,7 +50,7 @@ def authenticate():
 
 ADOBE_SUBSTANCE_URL = 'https://s3d.adobe.io'
 
-ADOBE_SUBSTANCE_BEARER_TOKEN = authenticate() 
+# ADOBE_SUBSTANCE_BEARER_TOKEN = authenticate() 
 # ADOBE_SUBSTANCE_BEARER_TOKEN = os.getenv('ADOBE_SUBSTANCE_ACCESS_TOKEN')
 
 
@@ -66,16 +67,6 @@ def adobe_substance_headers():
 
 
 def download_item(url:str=None):
-  
-    # tk = authenticate()
-    # _headers={
-    #   'X-API-Key': ADOBE_CLIENT_ID,
-    #   'Accept': 'application/json',
-    #   'Authorization': f'Bearer {tk}',
-    #   'Content-Type': 'application/json'
-    # }
-
-  
     res = requests.get(url=url,
                   headers=adobe_substance_headers())
     content = res.content
@@ -143,11 +134,7 @@ def make_api_call(url, data, *args, **kwargs):
   try:
     response = requests.post(
     url=url,
-    headers={
-    "X-API-Key": ADOBE_SUBSTANCE_CLIENT_ID,
-    "Authorization": f"Bearer {ADOBE_SUBSTANCE_BEARER_TOKEN}",
-    "Content-Type": "application/json"
-    },
+    headers=adobe_substance_headers(),
     json=data,
     *args,
     **kwargs
@@ -167,11 +154,7 @@ def poll_job_status(response):
   while True:
     status_res = requests.get(
     url=response.get("url"),
-    headers={
-    "Content-Type": "application/json",
-    "Authorization" : f"Bearer {ADOBE_SUBSTANCE_BEARER_TOKEN}",
-    "Accept": "application/json",
-    }
+    headers=adobe_substance_headers()
     )
     status_res.raise_for_status()
     job_status = status_res.json().get("status")
@@ -184,56 +167,56 @@ def poll_job_status(response):
       sleep(5)
 
 
-def create_3d_scene(payload):
-  res = make_api_call(
-  url="https://s3d.adobe.io/v1beta/3dscenes/create",
-  data=payload
-  )
-  res.raise_for_status()
-  status_res = poll_job_status(res)
-  return status_res
+# def create_3d_scene(payload):
+#   res = make_api_call(
+#   url="https://s3d.adobe.io/v1beta/3dscenes/create",
+#   data=payload
+#   )
+#   res.raise_for_status()
+#   status_res = poll_job_status(res)
+#   return status_res
 
 
-def render_3d_scene(payload):
-  res = make_api_call(
-  url="https://s3d.adobe.io/v1beta/3dscenes/render",
-  data=payload
-  )
-  res.raise_for_status()
-  status_res = poll_job_status(res)
-  return status_res
-
-
-
-def compose_3d_model(payload):
-  res = make_api_call(
-  url="https://s3d.adobe.io/v1beta/3dscenes/compose",
-  data=payload
-  )
-  res.raise_for_status()
-  status_res = poll_job_status(res)
-  return status_res
+# def render_3d_scene(payload):
+#   res = make_api_call(
+#   url="https://s3d.adobe.io/v1beta/3dscenes/render",
+#   data=payload
+#   )
+#   res.raise_for_status()
+#   status_res = poll_job_status(res)
+#   return status_res
 
 
 
-def describe_scene(payload):
-  describe_scene_res = make_api_call(
-  url="https://s3d.adobe.io/v1beta/3dscenes/get-description",
-  data=payload
-  )
-  describe_scene_res.raise_for_status()
-  status_res = poll_job_status(describe_scene_res)
-  return status_res
-  # convert 3D model
+# def compose_3d_model(payload):
+#   res = make_api_call(
+#   url="https://s3d.adobe.io/v1beta/3dscenes/compose",
+#   data=payload
+#   )
+#   res.raise_for_status()
+#   status_res = poll_job_status(res)
+#   return status_res
 
 
-def convert_model(payload):
-  res = make_api_call(
-  url="https://s3d.adobe.io/v1beta/3dmodels/convert",
-  data=payload
-  )
-  res.raise_for_status()
-  status_res = poll_job_status(res)
+
+# def describe_scene(payload):
+#   describe_scene_res = make_api_call(
+#   url="https://s3d.adobe.io/v1beta/3dscenes/get-description",
+#   data=payload
+#   )
+#   describe_scene_res.raise_for_status()
+#   status_res = poll_job_status(describe_scene_res)
+#   return status_res
+#   # convert 3D model
+
+
+# def convert_model(payload):
+#   res = make_api_call(
+#   url="https://s3d.adobe.io/v1beta/3dmodels/convert",
+#   data=payload
+#   )
+#   res.raise_for_status()
+#   status_res = poll_job_status(res)
 
 
 # render a 3D model
@@ -247,6 +230,7 @@ def render_3d_model(data):
     data=data
     )
     # poll for the job status
+    # status_res = check_status(res)
     status_res = poll_job_status(res)
     pp(status_res)
     # get the image data
@@ -353,7 +337,7 @@ def main():
   # res = authenticate()
   # pp(res)
   # return
-  generate_bg_comp_and_save(filename='zap.png')
+  generate_bg_comp_and_save(filename='testimage.png')
   # render_and_save(filename="zoop.png")
 
 
