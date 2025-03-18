@@ -51,7 +51,7 @@ def create(user_prompt:str=None,  focal_length_in_mm:int=None, seed:int=None):
         img = pil_image.open(io.BytesIO(item))
         dashed_prompt = prompt['prompt'].replace(" ", "_")
         dashed_prompt_with_seed = dashed_prompt + f"_seed_{seed}"
-        dashed_prompt_with_seed = dashed_prompt_with_seed[:256]
+        dashed_prompt_with_seed = dashed_prompt_with_seed[:128]
         image_name_from_prompt = f"{dashed_prompt_with_seed}.png"
         # image_name = 'zoop.png'
         img.save(image_name_from_prompt, "PNG")
