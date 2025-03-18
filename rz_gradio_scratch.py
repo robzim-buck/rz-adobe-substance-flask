@@ -8,7 +8,7 @@ from pprint import pprint as pp
 
 
 
-def create(user_prompt:str=None,  focal_length_in_mm:int=None, seed:int=None, filename:str=None):
+def create(user_prompt:str=None,  focal_length_in_mm:int=50, seed:int=99999, filename:str=None):
     print(user_prompt)
     prompt = {
     "sources": [
