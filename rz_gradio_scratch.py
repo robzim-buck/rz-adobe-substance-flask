@@ -8,7 +8,7 @@ from pprint import pprint as pp
 
 
 
-def create(user_prompt:str=None,  focal_length_in_mm:int=50, seed:int=99999, filename:str=None):
+def create(user_prompt:str=None,  focal_length_in_mm:int=None, seed:int=None, filename:str=None):
     print(user_prompt)
     prompt = {
     "sources": [
@@ -21,7 +21,7 @@ def create(user_prompt:str=None,  focal_length_in_mm:int=50, seed:int=99999, fil
     "heroAsset": "bottle",
     "cameraName": "main_camera",
     "prompt": f"{user_prompt}.  focal length {focal_length_in_mm} mm",
-    "seeds": [int(seed if type(seed) is int else int(seed[0]))]
+    "seeds": [int(seed)]
     }
     pp(prompt)
     mymodel = create_model(prompt=prompt)
@@ -100,8 +100,8 @@ demo = gr.Interface(
             # gr.Checkbox(value=True, label="Secret2 Checkbox"),
             # gr.Checkbox(value=True, label="Secret3 Checkbox"),
             gr.Text(label="Enter a Prompt"),
-            gr.Text(label="Focal Length in mm"),
-            gr.Text(label="Seed Integer for Render Randomness"),
+            gr.Text(label="Focal Length in mm", value=45),
+            gr.Text(label="Seed Integer for Render Randomness", value=9999),
             gr.Text(label="Enter a File Name or Leave Blank to Name with First 128 Chars of Prompt")
             # gr.Slider(value=15, minimum=0, maximum=100, step=1, label="Camera Focal Length"),
             # gr.JSON(value=cam_defs, label= "Camera Definition"),
