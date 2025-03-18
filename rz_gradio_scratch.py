@@ -21,7 +21,7 @@ def create(user_prompt:str=None,  focal_length_in_mm:int=50, seed:int=99999, fil
     "heroAsset": "bottle",
     "cameraName": "main_camera",
     "prompt": f"{user_prompt}.  focal length {focal_length_in_mm} mm",
-    "seeds": [int(seed)]
+    "seeds": [int(seed if type(seed) is int else int(seed[0]))]
     }
     pp(prompt)
     mymodel = create_model(prompt=prompt)
